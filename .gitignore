@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Distribuição
+*.egg-info/
+dist/
+build/
+
+# macOS
+.DS_Store
+
+# Agente Mestre Jedi
+.mestre-jedi/

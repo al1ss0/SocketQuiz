@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Velha - WebSocket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: radial-gradient(circle at top, rgba(99, 102, 241, 0.15), transparent 25%),
+                        radial-gradient(circle at right, rgba(16, 185, 129, 0.12), transparent 18%),
+                        linear-gradient(180deg, #0f172a 0%, #020617 100%);
+        }
+        .board-card {
+            backdrop-filter: blur(18px);
+            background-color: rgba(15, 23, 42, 0.88);
+        }
+        .cell {
+            min-width: 72px;
+            min-height: 72px;
+        }
+        .cell:hover {
+            background-color: rgba(148, 163, 184, 0.12);
+        }
+        .cell.x {
+            color: #38bdf8;
+        }
+        .cell.o {
+            color: #f472b6;
+        }
+        #roomLink a {
+            color: #a5b4fc;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 py-10 text-slate-100">
+    <div class="board-card max-w-md w-full rounded-3xl border border-slate-700/60 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.45)]">
+        <div class="flex items-center justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-3xl font-semibold tracking-tight">Jogo da Velha</h1>
+                <p class="text-sm text-slate-400 mt-1">Partida online via WebSocket</p>
+            </div>
+            <div class="rounded-full bg-slate-800/90 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">Multijogador</div>
+        </div>
+
+        <div id="status" class="mb-6 rounded-2xl border border-slate-700/70 bg-slate-900/80 px-4 py-3 text-center text-lg font-medium shadow-inner">Carregando...</div>
+
+        <div id="board" class="grid grid-cols-3 gap-3 mb-6" style="display: none;">
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="0" data-col="0"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="0" data-col="1"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="0" data-col="2"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="1" data-col="0"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="1" data-col="1"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="1" data-col="2"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="2" data-col="0"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="2" data-col="1"></div>
+            <div class="cell border border-slate-600 rounded-3xl flex items-center justify-center text-4xl font-extrabold cursor-pointer transition duration-200" data-row="2" data-col="2"></div>
+        </div>
+
+        <button id="createRoom" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/20 transition">Criar sala</button>
+        <div id="roomLink" class="mt-4 text-sm text-slate-300" style="display: none;"></div>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
