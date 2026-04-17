@@ -2,24 +2,42 @@ from dataclasses import dataclass, field
 from typing import Optional, Any
 
 @dataclass(frozen=True)
-class GameState:
-    """Representação imutável do estado de uma partida de Jogo da Velha."""
-    board: list[list[Optional[str]]] = field(
-        default_factory=lambda: [[None, None, None] for _ in range(3)]
-    )
-    current_turn: str = "X"
-    winner: Optional[str] = None
-    game_over: bool = False
-    player_x_id: Optional[str] = None
-    player_o_id: Optional[str] = None
+class Question:
+    text: str
+    options: list[str]
+    correct_option: int
 
     def to_dict(self) -> dict[str, Any]:
-        """Converte o estado para um dicionário serializável."""
         return {
-            "board": self.board,
-            "current_turn": self.current_turn,
-            "winner": self.winner,
+            "text": self.text,
+            "options": self.options,
+        }
+
+
+@dataclass(frozen=True)
+class GameState:
+    questions: list[Question] = field(default_factory=list)
+    current_question_index: int = 0
+    scores: dict[str, int] = field(default_factory=dict)
+    answers: dict[str, int] = field(default_factory=dict)
+    game_over: bool = False
+    winner: Optional[str] = None
+    player_1_id: Optional[str] = None
+    player_2_id: Optional[str] = None
+
+    def to_dict(self) -> dict[str, Any]:
+        current_question = None
+        if self.current_question_index < len(self.questions):
+            current_question = self.questions[self.current_question_index].to_dict()
+
+        return {
+            "current_question_index": self.current_question_index,
+            "total_questions": len(self.questions),
+            "current_question": current_question,
+            "scores": self.scores,
+            "answers_count": len(self.answers),
             "game_over": self.game_over,
-            "player_x": {"symbol": "X", "active": self.player_x_id is not None},
-            "player_o": {"symbol": "O", "active": self.player_o_id is not None},
+            "winner": self.winner,
+            "player_1": {"active": self.player_1_id is not None},
+            "player_2": {"active": self.player_2_id is not None},
         }

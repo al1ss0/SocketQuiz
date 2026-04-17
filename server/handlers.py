@@ -24,7 +24,7 @@ class GameWebSocketHandler(tornado.websocket.WebSocketHandler):
         self.room_manager = room_manager
         self.room_id = None
         self.player_id = None
-        self.symbol = None
+        self.player_name = None
 
     def open(self) -> None:
         self.room_id = self.get_argument("sala", None)
@@ -39,24 +39,23 @@ class GameWebSocketHandler(tornado.websocket.WebSocketHandler):
             return
 
         self.player_id = str(id(self))
-        self.symbol = room.assign_player(self.player_id)
+        self.player_name = room.assign_player(self.player_id)
 
-        # adiciona conexão na sala
         GameWebSocketHandler.connections.setdefault(self.room_id, []).append(self)
 
-        if self.symbol:
+        if self.player_name:
             self.write_message(json.dumps({
                 "type": "init",
-                "symbol": self.symbol,
+                "player": self.player_name,
                 "room": self.room_id
             }))
 
             if room.can_start():
-                self.broadcast_update(room)
+                self.broadcast_question(room)
             else:
                 self.write_message(json.dumps({
                     "type": "wait",
-                    "message": "Aguardando outro jogador..."
+                    "message": "Aguardando o segundo jogador..."
                 }))
         else:
             self.write_message(json.dumps({
@@ -70,13 +69,23 @@ class GameWebSocketHandler(tornado.websocket.WebSocketHandler):
             data = json.loads(message)
             room = self.room_manager.get_room(self.room_id)
 
-            if not room or data.get("action") != "move":
+            if not room:
                 return
 
-            row, col = data["row"], data["col"]
+            action = data.get("action")
 
-            if room.make_move(row, col, self.symbol):
-                self.broadcast_update(room)
+            if action == "answer":
+                option = data.get("option")
+
+                if isinstance(option, int) and room.register_answer(self.player_name, option):
+                    if room.all_answered():
+                        round_result = room.finish_round()
+                        self.broadcast_round_result(round_result)
+
+                        if room.state.game_over:
+                            self.broadcast_finished(room)
+                        else:
+                            self.broadcast_question(room)
 
         except Exception as e:
             logger.error(f"Erro no WebSocket: {e}")
@@ -87,17 +96,37 @@ class GameWebSocketHandler(tornado.websocket.WebSocketHandler):
             if room:
                 room.remove_player(self.player_id)
 
-        # remove conexão da sala
         if self.room_id in GameWebSocketHandler.connections:
-            GameWebSocketHandler.connections[self.room_id].remove(self)
+            if self in GameWebSocketHandler.connections[self.room_id]:
+                GameWebSocketHandler.connections[self.room_id].remove(self)
 
             if not GameWebSocketHandler.connections[self.room_id]:
                 del GameWebSocketHandler.connections[self.room_id]
 
-    def broadcast_update(self, room) -> None:
+    def broadcast_question(self, room) -> None:
         state = room.state.to_dict()
         message = json.dumps({
-            "type": "update",
+            "type": "question",
+            "state": state
+        })
+
+        for handler in GameWebSocketHandler.connections.get(self.room_id, []):
+            handler.write_message(message)
+
+    def broadcast_round_result(self, result: dict) -> None:
+        message = json.dumps({
+            "type": "round_result",
+            "correct_option": result["correct_option"],
+            "scores": result["scores"]
+        })
+
+        for handler in GameWebSocketHandler.connections.get(self.room_id, []):
+            handler.write_message(message)
+
+    def broadcast_finished(self, room) -> None:
+        state = room.state.to_dict()
+        message = json.dumps({
+            "type": "finished",
             "state": state
         })
 
