@@ -1,66 +1,46 @@
-# ⚔️ Jogo da Velha — Imersão em Sistemas Distribuídos com IA
+🧠 Quiz Multiplayer em Tempo Real com WebSockets
 
-Seja bem-vindo ao ambiente de criação do **Jogo da Velha Distribuído**, utilizando uma **IA de Mentoria** para guiar o aprendizado em Python, Tornado e WebSockets.
+Este projeto consiste em um sistema de quiz multiplayer desenvolvido com foco em comunicação em tempo real utilizando WebSockets. A aplicação permite que dois jogadores se conectem a uma mesma sala e participem de uma disputa baseada em perguntas sobre Python.
 
-> 💡 **Nota:** A Inteligência Artificial neste projeto é utilizada **exclusivamente para o ensino** e auxílio na criação do código. O jogo em si é estritamente multijogador (Humano vs Humano) e não conta com um bot ou oponente controlado por IA.
+O principal objetivo do projeto é demonstrar, na prática, como conceitos fundamentais de sistemas distribuídos e comunicação assíncrona podem ser aplicados em um cenário interativo e dinâmico.
 
-Este repositório foi montado como uma **Jornada de Aprendizado Pedagógica (#anti-vibe-coding)**. O objetivo não é apenas gerar código de forma caótica, mas permitir que você (o Padawan) aprenda a construir um sistema distribuído robusto com a supervisão atenta do agente inteligente **Mestre Jedi**.
+🚀 Funcionalidades
+🎮 Partidas multiplayer em tempo real (2 jogadores)
+🔗 Criação de salas privadas via link compartilhável
+❓ Perguntas fixas sobre Python
+⚡ Envio simultâneo de respostas
+📊 Atualização automática de placar
+✅ Destaque da resposta correta após cada rodada
+⏱️ Sincronização entre clientes utilizando WebSockets
+🧩 Interface moderna e responsiva
+🏗️ Tecnologias Utilizadas
+Python (backend)
+Tornado (servidor WebSocket)
+JavaScript (ES6 Modules) (frontend)
+HTML + Tailwind CSS (interface)
+WebSockets (comunicação em tempo real)
 
----
+🧠 Conceitos Aplicados
+Este projeto explora diversos conceitos importantes da computação:
 
-## 🏗️ Estrutura do ambiente
+Comunicação bidirecional com WebSockets
+Gerenciamento de estado no servidor
+Sincronização entre múltiplos clientes
+Arquitetura cliente-servidor
+Programação assíncrona
+Separação de responsabilidades (backend vs frontend)
 
-A verdadeira "mágica" arquitetural e pedagógica não está solta na raiz, mas sim encapsulada nestes arquivos e diretórios essenciais:
+🎯 Objetivo Acadêmico
+O sistema foi desenvolvido como parte de um trabalho acadêmico com o objetivo de analisar, na prática, como aplicações interativas em tempo real dependem diretamente do desempenho e da organização do sistema operacional e da comunicação entre processos.
 
-```text
-websocket-jogo-da-velha-com-ia/
-├── AGENTS.md                  # 🧙‍♂️ Orquestrador: Arquivo raiz que converte a IA no "Mestre Jedi".
-├── .ai-instructions/          # 🧠 Cérebro do Jedi: Regras, arquitetura e restrições.
-└── README.md                  # 📖 Este arquivo, contendo as instruções iniciais e de uso.
-```
+🏆 Como funciona
+Um jogador cria uma sala
+Um link é gerado para compartilhamento
+O segundo jogador entra pela URL
+O quiz inicia automaticamente
+Ambos respondem as perguntas
+O sistema avalia e atualiza o placar em tempo real
+Ao final, o vencedor é exibido
 
-O diretório `.ai-instructions/` contém o gabarito arquitetural do servidor e do frontend. **Evite inspecionar** diretamente estes arquivos se desejar ter a experiência educacional completa de ser guiado e desafiado pela IA.
-
----
-
-## 🤖 Dinâmica de ensino (AGENTS.md)
-
-Este projeto utiliza o padrão [AGENTS.md](https://agents.md/) para definir e orquestrar a inteligência artificial. Essa abordagem garante que a IA não atue apenas como um gerador de código, mas como um tutor ativo que:
-
-1. **Mantém a Persona:** Age rigorosamente como o Mestre Jedi.
-2. **Segue um Framework Cognitivo:** Aplica uma metodologia pedagógica modularizada e estruturada.
-3. **Erradica o "Vibe Coding":** Impõe planejamento e reflexão antes de qualquer linha de código ser gerada, garantindo que o Padawan entenda o "porquê" de cada implementação.
-
----
-
-## 🚀 Primeiros passos: Ativando sua imersão
-
-Para dar início ao desenvolvimento, você precisará utilizar uma IDE acoplada a um assistente de IA (ex: Cursor, Cline, Roo Code, etc.) configurada no diretório atual:
-
-1. **Abra a pasta** `websocket-jogo-da-velha-com-ia` na sua IDE de escolha.
-2. **Inicie o Agente de IA** (Chat / Composer).
-3. **Primeira Interação:** Basta enviar um simples "Olá" no chat inicial! O agente fará a leitura autônoma da cadeia de diretivas e arquivos ocultos para se inicializar.
-
-Deste ponto em diante, apenas siga o plano arquitetural do Mestre Jedi para codificar o projeto!
-
----
-
-## 🏆 O que você terá construído ao final do treinamento?
-
-Ao concluir esta jornada de mentoria, você terá em mãos um jogo robusto e totalmente jogável pela internet, contendo as seguintes funcionalidades:
-
-* 🎮 **Partidas Multijogador em Tempo Real:** Jogue contra seus amigos remotamente. As jogadas e estados de vitória são refletidos instantaneamente nos dois navegadores.
-* 🚪 **Sistema de Salas Privadas:** Criação de partidas isoladas via links ou QR Codes. Dezenas de duplas podem jogar simultaneamente no seu servidor sem interferirem no tabuleiro uns dos outros.
-* 📱 **Interface Moderna e Responsiva:** Visual imersivo, fluido e desenhado para gerar uma excelente experiência tanto no desktop quanto no celular.
-
-### 🚀 Principais habilidades adquiridas
-
-Finalizar este treinamento comprovará seu domínio tático nas seguintes trincheiras:
-
-* **Arquitetura Python Moderna:** Uso intensivo de Type Hints, Dataclasses e programação assíncrona (Async/Await) com **Tornado**.
-* **Comunicação Bidirecional & WebTech:** Fluência em WebSockets, manipulação de DOM e reatividade, utilizando estritamente **JavaScript Puro, HTML e CSS**.
-* **Sistemas Desacoplados:** Separação estrita de responsabilidades entre Cliente (Reativo) e Servidor (Autoritário).
-* **Estilização responsiva:** Criação de interfaces imersivas combinando a praticidade dos utilitários do **Tailwind** com customizações nativas em **CSS**.
-* **DevOps & Automação Local:** Domínio de orquestração de comandos utilizando **Makefile** e exposição de servidores locais para a internet pública via **Túneis Reverso SSH**.
-
-> *"Em um lugar escuro nos encontramos, e um pouco mais de conhecimento ilumina nosso caminho." — Yoda*
+🔥 Diferencial
+Diferente de aplicações tradicionais, este sistema utiliza WebSockets para garantir comunicação contínua e instantânea entre cliente e servidor, proporcionando uma experiência fluida e sincronizada entre os jogadores.
