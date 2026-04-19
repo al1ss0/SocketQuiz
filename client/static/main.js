@@ -19,5 +19,5 @@ const roomId = new URLSearchParams(window.location.search).get('sala');
 if (roomId) {
     ws.connect(roomId);
 } else {
-    ui.setStatus('Crie uma sala para iniciar o quiz.');
+    ui.setStatus('Crie uma sala para iniciar o quiz');
 }

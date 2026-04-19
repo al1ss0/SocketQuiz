@@ -84,7 +84,18 @@ class GameWebSocketHandler(tornado.websocket.WebSocketHandler):
                         self.broadcast_round_result(round_result)
 
                         async def next_step():
-                            await asyncio.sleep(5)
+                            delay = 10  # Tempo entre perguntas
+
+                            for i in range(delay, 0, -1):
+                                message = json.dumps({
+                                    "type": "next_question_timer",
+                                    "seconds": i
+                                })
+
+                                for handler in GameWebSocketHandler.connections.get(self.room_id, []):
+                                    handler.write_message(message)
+
+                                await asyncio.sleep(1)
 
                             if room.state.game_over:
                                 self.broadcast_finished(room)

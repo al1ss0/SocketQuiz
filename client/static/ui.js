@@ -72,10 +72,11 @@ export class UI {
 
         this.updateScoreboard(state.scores);
 
-        // Inicia timer
-        this.startTimer(25);
+        // Inicia timer 
+        this.startTimer(60);
     }
 
+    // Timer
     startTimer(seconds) {
         let time = seconds;
 
@@ -90,6 +91,7 @@ export class UI {
         }, 1000);
     }
 
+    // Desabilita opções
     disableOptions() {
         const buttons = this.options.querySelectorAll('.option-btn');
 
@@ -99,8 +101,8 @@ export class UI {
         });
     }
 
+    // Resultado 
     showRoundResult(correctOption) {
-        // Para o timer
         clearInterval(this.timerInterval);
 
         const buttons = this.options.querySelectorAll('.option-btn');
@@ -117,9 +119,15 @@ export class UI {
             btn.disabled = true;
         });
 
-        this.status.textContent = "Resposta revelada!";
+        this.status.textContent = "✅ Resposta revelada!";
     }
 
+    // Contador entre as perguntas
+    showNextQuestionTimer(seconds) {
+        this.status.textContent = `⏳ Próxima pergunta em ${seconds}s`;
+    }
+
+    // Final do Jogo
     showFinished(state) {
         clearInterval(this.timerInterval);
 

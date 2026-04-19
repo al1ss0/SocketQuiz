@@ -20,7 +20,7 @@ export class WS {
 
         this.socket.onclose = () => {
             console.log('WebSocket fechado');
-            this.ui.setStatus('Conexão encerrada.');
+            this.ui.setStatus('Conexão encerrada');
         };
     }
 
@@ -31,7 +31,7 @@ export class WS {
                 option
             }));
 
-            // 🎮 feedback imediato estilo Kahoot
+            // Feedback imediato
             this.ui.setStatus('✅ Resposta enviada! Aguardando o outro jogador...');
             this.ui.disableOptions();
         }
@@ -39,18 +39,18 @@ export class WS {
 
     handleMessage(data) {
 
-        // 🔰 INICIALIZAÇÃO
+        // Inicialização
         if (data.type === 'init') {
             this.playerName = data.player;
             this.ui.setStatus(`🎮 Você é o ${data.player}`);
         }
 
-        // ⏳ ESPERA
+        // Esperando jogador
         else if (data.type === 'wait') {
             this.ui.setStatus(`⏳ ${data.message}`);
         }
 
-        // ❓ NOVA PERGUNTA
+        // Nova pergunta
         else if (data.type === 'question') {
             this.ui.setStatus(`🔥 Pergunta ativa - ${this.playerName ?? 'Jogador'}`);
 
@@ -59,17 +59,20 @@ export class WS {
             });
         }
 
-        // 🎯 RESULTADO
+        // Resultado da rodada
         else if (data.type === 'round_result') {
             this.ui.updateScoreboard(data.scores);
-
-            // Mostra resultado 
             this.ui.showRoundResult(data.correct_option);
 
             this.ui.setStatus('🎯 Resposta revelada!');
         }
 
-        //FIM
+        // Contador entre perguntas
+        else if (data.type === 'next_question_timer') {
+            this.ui.showNextQuestionTimer(data.seconds);
+        }
+
+        // 🏁 Fim do jogo
         else if (data.type === 'finished') {
             this.ui.showFinished(data.state);
 
@@ -81,6 +84,7 @@ export class WS {
             }, 10000);
         }
 
+        // Sala cheia
         else if (data.type === 'full') {
             this.ui.setStatus(`❌ ${data.message}`);
         }
