@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quiz Multiplayer - WebSocket</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         body {
             background:
@@ -15,7 +17,7 @@
 
         .quiz-card {
             backdrop-filter: blur(18px);
-            background-color: rgba(15, 23, 42, 0.88);
+            background-color: rgba(15, 23, 42, 0.9);
         }
 
         #roomLink a {
@@ -23,65 +25,113 @@
             word-break: break-all;
         }
 
+        /* Feedback estilo Kahoot */
         .option-btn.correct {
-            border-color: #22c55e;
-            background-color: rgba(34, 197, 94, 0.15);
+            background-color: #22c55e !important;
+            color: white;
+            transform: scale(1.05);
         }
 
         .option-btn.wrong {
-            border-color: #ef4444;
-            background-color: rgba(239, 68, 68, 0.15);
+            background-color: #ef4444 !important;
+            color: white;
+        }
+
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+
+        .option-btn.selected {
+            filter: brightness(1.2);
+            transform: scale(0.97);
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.2) inset;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
         }
     </style>
+
 </head>
+
+
 <body class="min-h-screen flex items-center justify-center px-4 py-10 text-slate-100">
-    <div class="quiz-card max-w-2xl w-full rounded-3xl border border-slate-700/60 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.45)]">
-        <div class="flex items-center justify-between gap-4 mb-6">
-            <div>
-                <h1 class="text-3xl font-semibold tracking-tight">Quiz Multiplayer</h1>
-                <p class="text-sm text-slate-400 mt-1">Perguntas sobre Python em tempo real</p>
-            </div>
-            <div class="rounded-full bg-slate-800/90 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
-                WebSocket
-            </div>
+
+<div class="quiz-card max-w-3xl w-full rounded-3xl border border-slate-700/60 p-8 shadow-[0_30px_80px_rgba(15,23,42,0.45)]">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Quiz Multiplayer</h1>
+            <p class="text-sm text-slate-400 mt-1">Vamos testar seu conhecimento em Python?</p>
         </div>
 
-        <div id="status" class="mb-6 rounded-2xl border border-slate-700/70 bg-slate-900/80 px-4 py-3 text-center text-lg font-medium shadow-inner">
-            Carregando...
+        <div class="rounded-full bg-slate-800/90 px-3 py-1 text-xs uppercase tracking-[0.2em] text-slate-300">
+            WebSocket
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4">
-                <h2 class="text-sm uppercase tracking-wider text-slate-400 mb-3">Informações da rodada</h2>
-                <div id="questionMeta" class="text-sm text-slate-300">Aguardando início...</div>
-            </div>
-
-            <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4">
-                <h2 class="text-sm uppercase tracking-wider text-slate-400 mb-3">Placar</h2>
-                <div id="scoreboard" class="text-sm text-slate-300 space-y-2">
-                    <div>Jogador 1: 0</div>
-                    <div>Jogador 2: 0</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="quizArea" class="mb-6 hidden">
-            <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-5 mb-4">
-                <p id="questionText" class="text-lg font-medium leading-relaxed">Pergunta aparecerá aqui</p>
-            </div>
-
-            <div id="options" class="grid grid-cols-1 gap-3">
-                <!-- opções geradas via JS -->
-            </div>
-        </div>
-
-        <button id="createRoom" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/20 transition">
-            Criar sala
-        </button>
-
-        <div id="roomLink" class="mt-4 text-sm text-slate-300 hidden"></div>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <!-- STATUS -->
+    <div id="status"
+        class="mb-3 rounded-2xl border border-slate-700/70 bg-slate-900/80 px-4 py-3 text-center text-lg font-semibold shadow-inner">
+        Crie uma sala para iniciar o quiz
+    </div>
+
+    <!-- TIMER BAR -->
+    <div class="w-full bg-slate-800 rounded-full h-3 mb-6 overflow-hidden">
+        <div id="timerBar"
+            class="bg-indigo-500 h-3 rounded-full transition-all duration-1000"
+            style="width: 100%">
+        </div>
+    </div>
+
+    <!-- INFO -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4">
+            <h2 class="text-xs uppercase tracking-wider text-slate-400 mb-3">Rodada</h2>
+            <div id="questionMeta" class="text-sm text-slate-300">Aguardando início...</div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-900/70 p-4">
+            <h2 class="text-xs uppercase tracking-wider text-slate-400 mb-3">Placar</h2>
+            <div id="scoreboard" class="text-sm text-slate-300 space-y-2">
+                <div>Jogador 1: 0</div>
+                <div>Jogador 2: 0</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quizArea" class="mb-6 hidden">
+
+        <!-- PERGUNTA -->
+        <div class="rounded-2xl border border-slate-700/70 bg-slate-900/80 p-6 mb-5 text-center">
+            <p id="questionText" class="text-xl font-bold leading-relaxed">
+                Pergunta aparecerá aqui
+            </p>
+        </div>
+
+        <!-- OPÇÕES -->
+        <div id="options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- opções geradas via JS -->
+        </div>
+
+    </div>
+
+    <!-- BOTÃO -->
+    <button id="createRoom"
+        class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/20 transition transform hover:scale-[1.02]">
+        Criar sala
+    </button>
+
+    <!-- LINK -->
+    <div id="roomLink" class="mt-4 text-sm text-slate-300 text-center hidden"></div>
+
+</div>
+
+<script type="module" src="main.js"></script>
 </body>
 </html>

@@ -7,6 +7,7 @@ export class UI {
         this.options = document.getElementById('options');
         this.scoreboard = document.getElementById('scoreboard');
         this.questionMeta = document.getElementById('questionMeta');
+        this.timerBar = document.getElementById('timerBar');
         this.selectedOption = null;
         this.timerInterval = null;
     }
@@ -60,7 +61,10 @@ export class UI {
             button.addEventListener('click', () => {
                 this.selectedOption = index;
 
-                button.classList.add('scale-95');
+                const buttons = this.options.querySelectorAll('.option-btn');
+                buttons.forEach(btn => btn.classList.remove('selected'));
+
+                button.classList.add('selected');
 
                 this.disableOptions();
 
@@ -80,8 +84,16 @@ export class UI {
     startTimer(seconds) {
         let time = seconds;
 
+        if (this.timerBar) {
+            this.timerBar.style.width = '100%';
+        }
+
         this.timerInterval = setInterval(() => {
             this.status.textContent = `⏱️ ${time}s`;
+
+            if (this.timerBar) {
+                this.timerBar.style.width = `${(time / seconds) * 100}%`;
+            }
 
             time--;
 
